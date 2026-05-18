@@ -1,0 +1,2 @@
+# Complete-Multi-LAN-IPv6-Network-with-RIP-Routing-DHCP-and-VLAN-Configuration
+This project demonstrates the design and implementation of a complete enterprise-style multi-LAN network using IPv6 addressing. It features VLAN segmentation for different departments or user groups, dynamic address assignment via DHCP, RIPng dynamic routing for IPv6 reachability across multiple LANs and routers, inter-VLAN routing
