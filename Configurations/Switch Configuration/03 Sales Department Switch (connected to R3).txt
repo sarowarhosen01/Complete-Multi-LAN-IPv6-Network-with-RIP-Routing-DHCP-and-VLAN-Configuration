@@ -1,0 +1,20 @@
+enable
+configure terminal
+
+vlan 30
+name Sales_Dept
+exit
+
+interface range fastEthernet 0/1-12
+switchport mode access
+switchport access vlan 30
+spanning-tree portfast
+exit
+
+interface fastEthernet 0/24
+switchport mode trunk
+switchport trunk allowed vlan 30
+exit
+
+end
+write memory

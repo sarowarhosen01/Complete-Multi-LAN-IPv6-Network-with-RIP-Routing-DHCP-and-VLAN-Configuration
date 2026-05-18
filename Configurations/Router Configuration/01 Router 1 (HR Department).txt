@@ -1,0 +1,65 @@
+enable
+configure terminal
+hostname R1
+
+# Enable IPv6 routing
+ipv6 unicast-routing
+
+
+# Configure Router-on-a-Stick for HR VLAN
+interface fa0/0
+no shutdown
+interface fa0/0.10
+encapsulation dot1Q 10
+ipv6 address 2001:DB8:1:1::1/64
+ipv6 enable
+# Enable RA for stateless autoconfiguration
+ipv6 nd ra-interval 30
+ipv6 nd ra-lifetime 1800
+no ipv6 nd suppress-ra
+exit
+
+# Configure Point-to-Point links
+interface se0/0/0
+no shutdown
+ipv6 address 2001:DB8:12::1/64
+ipv6 enable
+
+interface se0/0/1
+no shutdown
+ipv6 address 2001:DB8:14::1/64
+ipv6 enable
+
+# DHCPv6 Configuration for HR Department (Stateful)
+ipv6 dhcp pool HR_DHCPv6
+address prefix 2001:DB8:1:1::/64
+dns-server 2001:4860:4860::8888
+dns-server 2001:4860:4860::8844
+domain-name hr.company.local
+
+# Apply DHCPv6 to interface
+interface fa0/0.10
+ipv6 dhcp server HR_DHCPv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+
+# RIPng Configuration
+ipv6 router rip RIPng
+exit
+
+# Enable RIPng on interfaces
+interface loopback 0
+ipv6 rip RIPng enable
+
+interface fa0/0.10
+ipv6 rip RIPng enable
+
+interface se0/0/0
+ipv6 rip RIPng enable
+
+interface se0/0/1
+ipv6 rip RIPng enable
+
+
+end
+write memory

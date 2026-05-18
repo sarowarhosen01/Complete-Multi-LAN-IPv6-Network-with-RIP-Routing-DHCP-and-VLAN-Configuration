@@ -1,0 +1,62 @@
+enable
+configure terminal
+hostname R2
+
+# Enable IPv6 routing
+ipv6 unicast-routing
+
+
+# Configure Router-on-a-Stick for IT VLAN
+interface fa0/0
+no shutdown
+interface fa0/0.30
+encapsulation dot1Q 30
+ipv6 address 2001:DB8:3:1::1/64
+ipv6 enable
+ipv6 nd ra-interval 30
+ipv6 nd ra-lifetime 1800
+no ipv6 nd suppress-ra
+exit
+
+# Configure Point-to-Point links
+interface se0/0/1
+no shutdown
+ipv6 address 2001:DB8:23::2/64
+ipv6 enable
+
+interface se0/0/0
+no shutdown
+ipv6 address 2001:DB8:36::1/64
+ipv6 enable
+
+
+# DHCPv6 Configuration for IT Department
+ipv6 dhcp pool IT_DHCPv6
+address prefix 2001:DB8:2:1::/64
+dns-server 2001:4860:4860::8888
+dns-server 2001:4860:4860::8844
+domain-name it.company.local
+
+interface fa0/0.30
+ipv6 dhcp server IT_DHCPv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+
+# RIPng Configuration
+ipv6 router rip RIPng
+exit
+
+
+
+interface fa0/0.30
+ipv6 rip RIPng enable
+
+interface se0/0/1
+ipv6 rip RIPng enable
+
+interface se0/0/0
+ipv6 rip RIPng enable
+
+
+end
+write memory

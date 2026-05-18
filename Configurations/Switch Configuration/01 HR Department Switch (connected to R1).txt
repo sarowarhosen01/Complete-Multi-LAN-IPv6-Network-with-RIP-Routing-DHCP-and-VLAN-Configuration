@@ -1,0 +1,20 @@
+enable
+configure terminal
+
+vlan 10
+name HR_Dept
+exit
+
+interface range fastEthernet 0/1-12
+switchport mode access
+switchport access vlan 10
+spanning-tree portfast
+exit
+
+interface fastEthernet 0/24
+switchport mode trunk
+switchport trunk allowed vlan 10
+exit
+
+end
+write memory
